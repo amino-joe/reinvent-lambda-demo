@@ -1,0 +1,56 @@
+{
+    "Parameters": {
+        "ConfluentApiKey": {
+            "Description": "Confluent Api Key",
+            "Type": "String"
+        },
+        "ConfluentApiSecret": {
+            "Description": "Confluent Api Secret",
+            "Type": "String"
+        }
+        },
+    "Resources": {
+        "ConfluentLambdaRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "ManagedPolicyArns":["arn:aws:iam::aws:policy/SecretsManagerReadWrite", "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"],
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                } 
+                }
+        },
+                    
+        "LambdaSecret": {
+    		"Type": "AWS::SecretsManager::Secret",
+    		"Properties": {
+      		"Name": "Confluent_Credentials",
+      		"Description": "This secret has a hardcoded password in SecretString (use GenerateSecretString instead)",
+      		"SecretString": {"Fn::Join": [
+                                            "",
+                                            [
+                                                "{\"username\":\"",
+                                                {
+                                                    "Ref": "ConfluentApiKey"
+                                                },
+                                                "\",\"password\":\"",
+                                                {
+                                                    "Ref": "ConfluentApiSecret"
+                                                },
+                                                "\"}"
+                                            ]
+                                        ]}
+      		
+      		
+   }
+  }
+ }
+}
